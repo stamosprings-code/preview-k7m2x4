@@ -146,7 +146,8 @@
     { id: 'tatiana', name: 'Татьяна Михайловна', role: 'Логопед-дефектолог', edu: 'Высшее дефектологическое образование', exp: 20, color: 'green', studios: ['logoped'] }
   ];
 
-  // ageText — как в расписании центра; age — для фильтра по возрасту (верхняя граница включительно)
+  // ageText — как в расписании центра; age — для фильтра по возрасту (верхняя граница включительно);
+  // plan — номер абонемента студии (plans[]), если он не первый; window — время занятия выбирается внутри промежутка
   var GROUPS = [
     { id: 'r1', studio: 'ryzhiki', name: 'Младшая группа', ageText: '2,7–4 года', age: [2.7, 4] },
     { id: 'r2', studio: 'ryzhiki', name: 'Старшая группа', ageText: '4–6 лет', age: [4, 6] },
@@ -161,7 +162,7 @@
     { id: 'm1', studio: 'maugli', name: 'Младшая группа', ageText: '5–7 лет', age: [5, 7] },
     { id: 'm2', studio: 'maugli', name: 'Старшая группа', ageText: '8–14 лет', age: [8, 14] },
     { id: 'k1', studio: 'cheshire', name: 'Рисунок', ageText: '5–12 лет', age: [5, 12] },
-    { id: 'k2', studio: 'cheshire', name: 'Лепка из глины', ageText: '5–12 лет', age: [5, 12] },
+    { id: 'k2', studio: 'cheshire', name: 'Лепка из глины', ageText: '5–12 лет', age: [5, 12], plan: 1 },
     { id: 's1', studio: 'say', name: 'Старт', ageText: '6–8 лет', age: [6, 8] },
     { id: 's2', studio: 'say', name: 'Группа 8–10', ageText: '8–10 лет', age: [8, 10] },
     { id: 's3', studio: 'say', name: 'Группа 9–11', ageText: '9–11 лет', age: [9, 11] },
@@ -413,8 +414,9 @@
 
   // Подбор по возрасту: ребёнку «age» полных лет (от age до age+1) подходит группа,
   // если её возрастной диапазон пересекается с этим годом жизни.
+  function fitsAge(g, age) { return g.age[0] < age + 1 && g.age[1] >= age; }
   function groupsForAge(age) {
-    return GROUPS.filter(function (g) { return g.age[0] < age + 1 && g.age[1] >= age; });
+    return GROUPS.filter(function (g) { return fitsAge(g, age); });
   }
   function studiosForAge(age) {
     var ids = groupsForAge(age).map(function (g) { return g.studio; });
@@ -427,6 +429,70 @@
     var out = [];
     for (var a = lo; a < hi; a++) out.push(a);
     return out;
+  }
+
+  // ---- Расписание (raspisanie.html) ----
+  function minutes(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
+  // Фильтр расписания: { age: полных лет или null, studio: id или null }
+  function groupMatches(g, f) {
+    f = f || {};
+    if (f.studio && g.studio !== f.studio) return false;
+    if (f.age !== null && f.age !== undefined && !fitsAge(g, f.age)) return false;
+    return true;
+  }
+  // Занятия одного дня недели по времени начала; при одинаковом начале — в порядке студий
+  function lessonsOfDay(day, f) {
+    return LESSONS.filter(function (l) { return l.day === day && groupMatches(group(l.group), f); })
+      .sort(function (a, b) {
+        return minutes(a.start) - minutes(b.start) ||
+          STUDIOS.indexOf(studio(group(a.group).studio)) - STUDIOS.indexOf(studio(group(b.group).studio)) ||
+          GROUPS.indexOf(group(a.group)) - GROUPS.indexOf(group(b.group));
+      });
+  }
+  // «Идёт сейчас»: тот же день недели и время между началом (включительно) и концом.
+  // Промежуток логопеда (время по записи) — не занятие, его не отмечаем.
+  function lessonIsNow(l, now) {
+    if (group(l.group).window || weekdayIndex(now) !== l.day) return false;
+    var m = now.getHours() * 60 + now.getMinutes();
+    return m >= minutes(l.start) && m < minutes(l.end);
+  }
+  // «Моя неделя»: занятия выбранных групп, которые пересекаются по времени.
+  // Занятия встык (одно кончается в 19:00, другое начинается в 19:00) не пересекаются.
+  // Промежуток логопеда не считаем: 30 минут выбираются вместе с логопедом в свободное время.
+  function weekOverlaps(groupIds) {
+    var list = LESSONS.filter(function (l) { return groupIds.indexOf(l.group) !== -1 && !group(l.group).window; });
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      for (var j = i + 1; j < list.length; j++) {
+        var a = list[i], b = list[j];
+        if (a.day === b.day && a.group !== b.group && minutes(a.start) < minutes(b.end) && minutes(b.start) < minutes(a.end)) {
+          out.push({ day: a.day, a: a, b: b });
+        }
+      }
+    }
+    return out;
+  }
+  // Примерная сумма в месяц за выбранные группы одного ребёнка: один абонемент на студию и направление;
+  // если абонементов два и больше, у каждого берётся цена «со второй студией» (где она есть).
+  function weekCost(groupIds) {
+    var lines = [];
+    groupIds.forEach(function (gid) {
+      var g = group(gid);
+      if (!g) return;
+      var s = studio(g.studio);
+      var plan = studioPlans(s)[g.plan || 0];
+      var key = s.id + '|' + (g.plan || 0);
+      if (lines.some(function (x) { return x.key === key; })) return;
+      lines.push({ key: key, studio: s, plan: plan });
+    });
+    var many = lines.length > 1;
+    var total = 0;
+    lines.forEach(function (x) {
+      x.combo = many && !!x.plan.combo;
+      x.price = x.combo ? x.plan.combo : x.plan.price;
+      total += x.price;
+    });
+    return { lines: lines, total: total };
   }
 
   // Дата из демо-состояния: число — смещение от сегодня, строка — ISO-дата
@@ -455,7 +521,8 @@
     today: today, addDays: addDays, iso: iso, weekdayIndex: weekdayIndex, fmtDate: fmtDate, fmtDateShort: fmtDateShort, parseISO: parseISO,
     studio: studio, group: group, teacher: teacher, byId: byId, studioPlans: studioPlans, minPrice: minPrice, stateDate: stateDate, groupTeacher: groupTeacher,
     lessonsOfGroup: lessonsOfGroup, groupsOfStudio: groupsOfStudio, studioUrl: studioUrl, trialUrl: trialUrl, daysText: daysText, groupSchedule: groupSchedule, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive,
-    plural: plural, yearsText: yearsText, groupsForAge: groupsForAge, studiosForAge: studiosForAge, pickerAges: pickerAges,
+    plural: plural, yearsText: yearsText, fitsAge: fitsAge, groupsForAge: groupsForAge,
+    minutes: minutes, groupMatches: groupMatches, lessonsOfDay: lessonsOfDay, lessonIsNow: lessonIsNow, weekOverlaps: weekOverlaps, weekCost: weekCost, studiosForAge: studiosForAge, pickerAges: pickerAges,
     liveBanners: liveBanners, livePromos: livePromos
   };
 })();

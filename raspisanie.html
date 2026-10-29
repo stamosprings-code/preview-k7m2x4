@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Расписание 2026/2027 — «Сказочный мир», Колтуши</title>
+  <meta name="description" content="Расписание студий Центра эстетического развития «Сказочный мир» в Колтушах на 2026/2027 учебный год: по дням и по студиям, с подбором по возрасту ребёнка.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#EE8833">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="raspisanie">
+  <div id="site-header"></div>
+  <noscript><p class="container">Для работы демо-версии включите JavaScript в браузере.</p></noscript>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Главная</a> · Расписание</div>
+        <h1>Расписание 2026/2027</h1>
+        <p>Выберите возраст ребёнка — останутся только подходящие группы. Нажмите «+» у&nbsp;занятия, чтобы собрать «Мою неделю»: сразу видно пересечения по&nbsp;времени и&nbsp;примерную сумму в&nbsp;месяц.</p>
+      </div>
+    </section>
+
+    <!-- Фильтры: возраст, студия, вид -->
+    <div class="sched-toolbar">
+      <div class="container">
+        <div class="chips chips-scroll" id="age-chips" role="group" aria-label="Сколько лет ребёнку"></div>
+        <div class="row sched-row2">
+          <label class="lbl" for="studio-select">Студия</label>
+          <select class="select" id="studio-select"></select>
+          <div class="segmented" id="view-switch" role="group" aria-label="Вид расписания">
+            <button type="button" data-view="days">По дням</button>
+            <button type="button" data-view="studios">По студиям</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section sched-section">
+      <div class="container">
+        <p class="sched-summary" id="sched-summary" aria-live="polite"></p>
+        <div id="sched"></div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="usloviya">
+      <div class="container">
+        <div class="terms">
+          <h3>Общие условия</h3>
+          <ul id="terms-list"></ul>
+          <p class="muted small terms-more">Цены всех студий — на странице <a href="studii.html#ceny">«Студии»</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/raspisanie.js"></script>
+</body>
+</html>
