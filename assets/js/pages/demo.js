@@ -11,10 +11,10 @@
       title: 'Запись на пробное занятие',
       lead: 'Это демо-версия сайта: заявка здесь пока не отправляется. Ниже — как запись будет работать, когда сайт заработает по-настоящему.',
       steps: [
-        'Родитель выбирает студию и возраст ребёнка, оставляет имя и телефон, ставит галочку согласия.',
+        'Родитель выбирает студию или группы в расписании, оставляет контактный телефон и комментарий — когда удобно позвонить, ставит галочку согласия. Возраст и выбранные группы каждого ребёнка подставляются в заявку сами — детей может быть несколько.',
         'Заявка сразу появляется у администратора центра со статусом «Новая».',
-        'Администратор звонит, подбирает группу и время пробного занятия.',
-        'После пробного занятия ребёнка записывают в группу, а родитель получает доступ в личный кабинет.'
+        'Администратор перезванивает, отвечает на вопросы, подбирает группу и время пробного занятия.',
+        'После пробного занятия администратор заключает с родителем договор — и только тогда открывается личный кабинет родителя.'
       ]
     },
     prazdnik: {
@@ -47,6 +47,22 @@
   document.getElementById('demo-steps').innerHTML = v.steps.map(function (s) { return '<li>' + ui.esc(s) + '</li>'; }).join('');
   if (studio) {
     document.getElementById('mock-studio').textContent = studio.kind + ' «' + studio.title + '»';
+    document.getElementById('mock-studio').classList.add('filled');
+  }
+  // Дети, их возраст и группы из «Моей недели» на странице расписания
+  var kids = SM.parseKidsParam(params.get('kids'));
+  if (kids.length) {
+    document.getElementById('mock-studio-label').textContent = kids.length > 1 ? 'Дети и выбранные группы' : 'Выбранные группы';
+    document.getElementById('mock-studio').classList.add('filled');
+    document.getElementById('mock-studio').innerHTML = kids.map(function (k, i) {
+      var who = (kids.length > 1 ? 'Ребёнок ' + (i + 1) : 'Ребёнок') + (k.age !== null ? ', ' + SM.yearsText(k.age) : '');
+      return '<b>' + ui.esc(who) + '</b><br>' + k.groups.map(function (id) {
+        var g = SM.group(id);
+        return ui.esc('«' + SM.studio(g.studio).title + '», ' + ui.groupLabel(g));
+      }).join('<br>');
+    }).join('<br>');
+    // Возраст уже указан у каждого ребёнка
+    document.getElementById('mock-age').parentNode.hidden = true;
   }
   document.title = v.title + ' — демо-версия «Сказочный мир»';
 

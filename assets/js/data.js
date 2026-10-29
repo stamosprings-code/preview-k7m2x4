@@ -132,6 +132,9 @@
     'Учебники и рабочие тетради в стоимость не входят.'
   ];
 
+  // Семейная скидка (см. TERMS): сколько детей с абонементами → процент от суммы
+  var FAMILY_DISCOUNT = [{ kids: 3, pct: 15 }, { kids: 2, pct: 10 }];
+
   var PARTY = { price: 11000 };
 
   // Педагоги — вымышленные примеры. Реальные профили — после согласия педагогов на публикацию.
@@ -374,6 +377,22 @@
   function studioUrl(sid) { return 'studiya.html?id=' + sid; }
   // Запись на пробное из студии: заглушка «Это демо-версия» сразу показывает выбранную студию
   function trialUrl(sid) { return 'demo.html?form=probnoe&studio=' + sid; }
+  // Запись из «Моих детей»: заглушка сама подставляет возраст и группы каждого ребёнка.
+  // В адресе: kids=7-o1.s1_4-r1 (возраст-группы через точку, дети через «_»; возраст может быть пустым)
+  function kidsParam(kids) {
+    return kids.map(function (k) { return (k.age === null || k.age === undefined ? '' : k.age) + '-' + k.groups.join('.'); }).join('_');
+  }
+  function parseKidsParam(str) {
+    return String(str || '').split('_').map(function (part) {
+      var p = part.split('-');
+      var age = parseInt(p[0], 10);
+      return { age: age >= 2 && age <= 16 ? age : null, groups: (p[1] || '').split('.').filter(function (id) { return group(id); }) };
+    }).filter(function (k) { return k.groups.length; });
+  }
+  function signupUrl(kids) {
+    var list = kids.filter(function (k) { return k.groups.length; });
+    return 'demo.html?form=probnoe' + (list.length ? '&kids=' + kidsParam(list) : '');
+  }
 
   // Дни словами: «Пн, Ср»; три дня подряд и больше — диапазоном «Пн–Пт»
   function daysText(days) {
@@ -494,6 +513,17 @@
     });
     return { lines: lines, total: total };
   }
+  // Сумма за всех детей семьи: у каждого ребёнка — weekCost (с ценой за вторую студию),
+  // затем семейная скидка от общей суммы. Складываются ли эти скидки — уточняется у центра (docs/plan.md).
+  function familyCost(kidsGroups) {
+    var kids = kidsGroups.map(weekCost);
+    var subtotal = kids.reduce(function (s, k) { return s + k.total; }, 0);
+    var n = kids.filter(function (k) { return k.lines.length; }).length;
+    var rule = FAMILY_DISCOUNT.filter(function (r) { return n >= r.kids; })[0];
+    var pct = rule ? rule.pct : 0;
+    var discount = Math.round(subtotal * pct / 100);
+    return { kids: kids, subtotal: subtotal, pct: pct, discount: discount, total: subtotal - discount };
+  }
 
   // Дата из демо-состояния: число — смещение от сегодня, строка — ISO-дата
   function stateDate(v) {
@@ -520,9 +550,9 @@
     state: load, save: save, reset: reset,
     today: today, addDays: addDays, iso: iso, weekdayIndex: weekdayIndex, fmtDate: fmtDate, fmtDateShort: fmtDateShort, parseISO: parseISO,
     studio: studio, group: group, teacher: teacher, byId: byId, studioPlans: studioPlans, minPrice: minPrice, stateDate: stateDate, groupTeacher: groupTeacher,
-    lessonsOfGroup: lessonsOfGroup, groupsOfStudio: groupsOfStudio, studioUrl: studioUrl, trialUrl: trialUrl, daysText: daysText, groupSchedule: groupSchedule, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive,
+    lessonsOfGroup: lessonsOfGroup, groupsOfStudio: groupsOfStudio, studioUrl: studioUrl, trialUrl: trialUrl, signupUrl: signupUrl, kidsParam: kidsParam, parseKidsParam: parseKidsParam, daysText: daysText, groupSchedule: groupSchedule, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive,
     plural: plural, yearsText: yearsText, fitsAge: fitsAge, groupsForAge: groupsForAge,
-    minutes: minutes, groupMatches: groupMatches, lessonsOfDay: lessonsOfDay, lessonIsNow: lessonIsNow, weekOverlaps: weekOverlaps, weekCost: weekCost, studiosForAge: studiosForAge, pickerAges: pickerAges,
+    minutes: minutes, groupMatches: groupMatches, lessonsOfDay: lessonsOfDay, lessonIsNow: lessonIsNow, weekOverlaps: weekOverlaps, weekCost: weekCost, familyCost: familyCost, FAMILY_DISCOUNT: FAMILY_DISCOUNT, studiosForAge: studiosForAge, pickerAges: pickerAges,
     liveBanners: liveBanners, livePromos: livePromos
   };
 })();

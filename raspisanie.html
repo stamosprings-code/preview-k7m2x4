@@ -19,18 +19,24 @@
       <div class="container">
         <div class="breadcrumbs"><a href="index.html">Главная</a> · Расписание</div>
         <h1>Расписание 2026/2027</h1>
-        <p>Выберите возраст ребёнка — останутся только подходящие группы. Нажмите «+» у&nbsp;занятия, чтобы собрать «Мою неделю»: сразу видно пересечения по&nbsp;времени и&nbsp;примерную сумму в&nbsp;месяц.</p>
+        <p>Выберите возраст ребёнка — останутся только подходящие группы. Нажмите «+» у&nbsp;занятия, чтобы собрать «Мою неделю»: сразу видно пересечения по&nbsp;времени и&nbsp;примерную сумму в&nbsp;месяц. Детей несколько? Нажмите «ещё ребёнок».</p>
       </div>
     </section>
 
     <!-- Фильтры: возраст, студия, вид -->
     <div class="sched-toolbar">
       <div class="container">
-        <div class="chips chips-scroll" id="age-chips" role="group" aria-label="Сколько лет ребёнку"></div>
-        <div class="row sched-row2">
-          <label class="lbl" for="studio-select">Студия</label>
-          <select class="select" id="studio-select"></select>
-          <div class="segmented" id="view-switch" role="group" aria-label="Вид расписания">
+        <div class="kids-row" id="kids-row" role="group" aria-label="Для какого ребёнка смотрим расписание"></div>
+        <div class="sched-filters">
+          <div class="field">
+            <label class="lbl" for="age-select">Возраст ребёнка</label>
+            <select class="select" id="age-select"></select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="studio-select">Студия</label>
+            <select class="select" id="studio-select"></select>
+          </div>
+          <div class="view-switch" id="view-switch" role="group" aria-label="Вид расписания">
             <button type="button" data-view="days">По дням</button>
             <button type="button" data-view="studios">По студиям</button>
           </div>
@@ -46,7 +52,18 @@
     </section>
 
     <section class="section section-soft" id="usloviya">
-      <div class="container">
+      <div class="container two-col">
+        <div class="terms" id="kak-zapisatsya">
+          <h3>Как записаться</h3>
+          <ol class="steps steps-compact">
+            <li>Отметьте «+» подходящие группы — внизу появится «Моя неделя». Если детей несколько, добавьте каждого кнопкой «ещё ребёнок»: у каждого свой возраст и группы, семейная скидка посчитается сама.</li>
+            <li>Нажмите «Записаться» и оставьте номер телефона. Возраст и группы попадут в заявку сами, а в комментарии можно написать, когда вам удобно, чтобы позвонили.</li>
+            <li>Заявка сразу придёт администратору центра — он перезвонит, ответит на вопросы и подберёт время пробного занятия.</li>
+          </ol>
+          <h3>Личный кабинет родителя</h3>
+          <p>После заключения договора в центре откроется личный кабинет родителя. В нём — вся информация по занятиям: расписание и посещения, отмены и переносы, остаток абонемента, номер и срок действия договора с напоминанием о продлении.</p>
+          <p>Если ребёнок заболел, отметьте в кабинете заранее, что он не придёт, а справку принесите в центр. Администратор пересчитает абонемент: добавит отработку, если её можно назначить, или закроет занятие.</p>
+        </div>
         <div class="terms">
           <h3>Общие условия</h3>
           <ul id="terms-list"></ul>
