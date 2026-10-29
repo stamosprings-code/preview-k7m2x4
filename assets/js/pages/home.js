@@ -9,7 +9,7 @@
 
   function $(id) { return document.getElementById(id); }
 
-  // Ссылка «Все …» в заголовке раздела. Страницы разделов появятся в задачах 3, 5 и 6 (docs/plan.md).
+  // Ссылка «Все …» в заголовке раздела. Акции и контакты появятся в задачах 5 и 6 (docs/plan.md).
   function addMore(sectionId, href, text) {
     var head = document.querySelector('#' + sectionId + ' .section-head');
     if (head) head.insertAdjacentHTML('beforeend', '<a class="link-more" href="' + href + '">' + esc(text) + '</a>');
@@ -56,29 +56,8 @@
   }
 
   // ---------- Подбор студии по возрасту ----------
-  function studioCard(s) {
-    var plans = SM.studioPlans(s);
-    var groups = s.individual ? 'индивидуально' : s.groups + ' ' + SM.plural(s.groups, 'группа', 'группы', 'групп');
-    var price = plans.length > 1
-      ? '<b>от ' + SM.fmtPrice(SM.minPrice(s)) + '</b><small>в месяц</small>'
-      : '<b>' + SM.fmtPrice(plans[0].price) + '</b><small>' + esc(plans[0].label) + '</small>';
-    return '<a class="studio-card tone-' + s.color + '" href="studii.html#' + s.id + '" data-studio="' + s.id + '">' +
-      '<div class="studio-card-top"><span class="studio-icon">' + ui.icon(s.icon) + '</span>' +
-      '<div><div class="studio-kind">' + esc(s.kind) + '</div><div class="studio-name">' + esc(s.title) + '</div></div></div>' +
-      '<div class="studio-card-body"><p>' + esc(s.lead) + '</p>' +
-      '<div class="studio-meta"><span class="pill pill-tone">' + esc(s.ageText) + '</span><span class="pill">' + groups + '</span></div>' +
-      '<p class="studio-fit" hidden></p>' +
-      '<div class="studio-price"><span>' + price + '</span><span class="arrow">Подробнее →</span></div>' +
-      '</div></a>';
-  }
-
-  // «Младшая группа, 5–7 лет»; возраст не повторяем, если он уже в названии («Группа 8–10»)
-  function groupLabel(g) {
-    return g.name.indexOf(g.ageText.split(' ')[0]) !== -1 ? g.name : g.name + ', ' + g.ageText;
-  }
-
   var grid = $('studio-grid');
-  grid.innerHTML = SM.STUDIOS.map(studioCard).join('');
+  grid.innerHTML = SM.STUDIOS.map(ui.studioCard).join('');
   addMore('podbor', 'studii.html', 'Все студии');
 
   var ages = SM.pickerAges();
@@ -98,7 +77,7 @@
       card.hidden = !!fit && !mine.length;
       line.hidden = !mine || !mine.length;
       if (mine && mine.length) {
-        line.textContent = 'Подходит: ' + mine.map(groupLabel).join('; ');
+        line.textContent = 'Подходит: ' + mine.map(ui.groupLabel).join('; ');
       }
     });
     var n = fit ? SM.studiosForAge(age).length : SM.STUDIOS.length;

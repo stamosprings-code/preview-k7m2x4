@@ -118,6 +118,9 @@
 
   function current(item, page) { return item.id === page ? ' aria-current="page"' : ''; }
 
+  // Ссылка кнопок «Записаться»: страница студии подставляет свою (<body data-cta="...">)
+  function ctaHref() { return document.body.dataset.cta || 'demo.html?form=probnoe'; }
+
   function renderHeader(page) {
     var nav = NAV.map(function (n) { return '<a href="' + n.href + '"' + current(n, page) + '>' + n.title + '</a>'; }).join('');
     var mobile = NAV.map(function (n) {
@@ -132,13 +135,13 @@
       '<nav class="main-nav" aria-label="Основное меню">' + nav + '</nav>' +
       '<div class="header-actions">' +
       '<a class="header-phone" href="' + C.phoneMain.href + '">' + C.phoneMain.text + '</a>' +
-      '<a class="btn btn-blue header-cta" href="demo.html?form=probnoe">Записаться</a>' +
+      '<a class="btn btn-blue header-cta" href="' + ctaHref() + '">Записаться</a>' +
       '<button class="burger" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Меню">' + icon('menu') + '</button>' +
       '</div></div>' +
       '<div class="stripes thin"></div>' +
       '<nav class="mobile-nav" id="mobile-nav" aria-label="Меню"><div class="container"><ul>' + mobile + '</ul>' +
       '<div class="mobile-nav-foot">' +
-      '<a class="btn btn-blue btn-block" href="demo.html?form=probnoe">Записаться на пробное занятие</a>' +
+      '<a class="btn btn-blue btn-block" href="' + ctaHref() + '">Записаться на пробное занятие</a>' +
       '<a class="btn btn-ghost btn-block" href="' + C.phoneMain.href + '">' + icon('phone') + C.phoneMain.text + '</a>' +
       '</div></div></nav>' +
       '</header>';
@@ -178,9 +181,31 @@
     var bar = document.createElement('div');
     bar.className = 'mobile-cta';
     bar.innerHTML = '<a class="btn btn-ghost" href="' + C.phoneMain.href + '" aria-label="Позвонить ' + C.phoneMain.text + '">' + icon('phone') + 'Позвонить</a>' +
-      '<a class="btn btn-blue" href="demo.html?form=probnoe">Записаться на пробное</a>';
+      '<a class="btn btn-blue" href="' + ctaHref() + '">Записаться на пробное</a>';
     document.body.appendChild(bar);
     document.body.classList.add('has-mobile-cta');
+  }
+
+  // ---------- Карточка студии (главная и список студий) ----------
+  function studioCard(s) {
+    var plans = SM.studioPlans(s);
+    var groups = s.individual ? 'индивидуально' : s.groups + ' ' + SM.plural(s.groups, 'группа', 'группы', 'групп');
+    var price = plans.length > 1
+      ? '<b>от ' + SM.fmtPrice(SM.minPrice(s)) + '</b><small>в месяц</small>'
+      : '<b>' + SM.fmtPrice(plans[0].price) + '</b><small>' + esc(plans[0].label) + '</small>';
+    return '<a class="studio-card tone-' + s.color + '" href="' + SM.studioUrl(s.id) + '" id="' + s.id + '" data-studio="' + s.id + '">' +
+      '<div class="studio-card-top"><span class="studio-icon">' + icon(s.icon) + '</span>' +
+      '<div><div class="studio-kind">' + esc(s.kind) + '</div><div class="studio-name">' + esc(s.title) + '</div></div></div>' +
+      '<div class="studio-card-body"><p>' + esc(s.lead) + '</p>' +
+      '<div class="studio-meta"><span class="pill pill-tone">' + esc(s.ageText) + '</span><span class="pill">' + groups + '</span></div>' +
+      '<p class="studio-fit" hidden></p>' +
+      '<div class="studio-price"><span>' + price + '</span><span class="arrow">Подробнее →</span></div>' +
+      '</div></a>';
+  }
+
+  // «Младшая группа, 5–7 лет»; возраст не повторяем, если он уже в названии («Группа 8–10»)
+  function groupLabel(g) {
+    return g.name.indexOf(g.ageText.split(' ')[0]) !== -1 ? g.name : g.name + ', ' + g.ageText;
   }
 
   // ---------- Хранилище браузера (только для удобств посетителя) ----------
@@ -275,7 +300,7 @@
   }
 
   SM.ui = {
-    esc: esc, icon: icon, logoBanner: logoBanner, logoRound: logoRound, modal: modal, toast: toast,
+    esc: esc, icon: icon, logoBanner: logoBanner, logoRound: logoRound, modal: modal, toast: toast, studioCard: studioCard, groupLabel: groupLabel,
     prefGet: prefGet, prefSet: prefSet, NAV: NAV
   };
 

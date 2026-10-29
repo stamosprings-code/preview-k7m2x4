@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Студии и цены — «Сказочный мир», Колтуши</title>
+  <meta name="description" content="Все студии Центра эстетического развития «Сказочный мир» в Колтушах: возраст, группы, цены абонементов и пробных занятий на 2026/2027 учебный год.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#EE8833">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="studii">
+  <div id="site-header"></div>
+  <noscript><p class="container">Для работы демо-версии включите JavaScript в браузере.</p></noscript>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Главная</a> · Студии</div>
+        <h1>Студии и направления</h1>
+        <p id="studii-lead">Театр, вокал, танец, гимнастика, рисунок и&nbsp;глина, английский, мини-сад, подготовка к&nbsp;школе и&nbsp;логопед — в&nbsp;одном здании в&nbsp;Колтушах.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="studio-grid" id="studio-grid"></div>
+        <div class="callout home-help">
+          <b>Не знаете, что выбрать?</b> <a href="index.html#podbor">Подберите студию по возрасту</a> или приходите на пробное занятие — педагог подскажет группу.
+          <a class="btn btn-blue" href="demo.html?form=probnoe">Записаться на пробное</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="ceny">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Учебный год 2026/2027</span>
+            <h2>Цены</h2>
+            <p>Абонемент — на месяц. Если ребёнок занимается ещё в одной студии центра, абонемент стоит дешевле.</p>
+          </div>
+        </div>
+        <table class="price-table">
+          <caption class="sr-only">Цены студий на 2026/2027 учебный год</caption>
+          <thead><tr id="price-head"></tr></thead>
+          <tbody id="price-table"></tbody>
+        </table>
+        <div class="terms" id="terms">
+          <h3>Общие условия</h3>
+          <ul id="terms-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/studii.js"></script>
+</body>
+</html>

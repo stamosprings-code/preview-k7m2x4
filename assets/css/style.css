@@ -360,6 +360,48 @@ button.media-tile:hover .play { transform: scale(1.08); }
 .price-box .btn { margin-top: 12px; }
 @media (min-width: 900px) { .studio-hero-inner { grid-template-columns: 1.4fr 1fr; align-items: center; gap: 48px; } }
 
+.studio-hero .studio-meta .pill svg, .slot svg, .tag svg { width: 16px; height: 16px; }
+.studio-actions { margin: 20px 0 0; }
+.price-title { font-size: 22px; margin: 0 0 4px; }
+.price-note { font-size: 14.5px; color: var(--muted); margin: 10px 0 0; }
+.teacher-inline .teacher-facts { margin-top: 6px; }
+.teacher-note { margin: 10px 0 0; }
+#studio-teacher .teacher-inline { align-items: flex-start; }
+@media (min-width: 900px) {
+  .gallery.gallery-studio { grid-template-columns: repeat(3, 1fr); }
+  .gallery-studio .media-tile { aspect-ratio: 4 / 3; }
+  #studio-groups { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+}
+#other-studios .tag { text-decoration: none; min-height: 44px; padding: 8px 14px; font-size: 15.5px; }
+#other-studios .tag:hover { background: #fff; }
+
+/* Список студий: сводная таблица цен. На телефоне строка — карточка с подписями значений */
+.price-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+.price-table, .price-table tbody, .price-table tr, .price-table td { display: block; }
+.price-table thead { display: none; }
+.price-table tr { background: #fff; border-radius: var(--radius-sm); border-left: 6px solid var(--tone); padding: 12px 14px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(30, 42, 68, .05); }
+.price-table tr.cont-row { margin-top: -6px; }
+.price-table td { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 2px 0; text-align: right; }
+.price-table td::before { content: attr(data-label); color: var(--muted); font-size: 14px; font-weight: 700; flex: none; text-align: left; }
+.price-table td.name { flex-wrap: wrap; justify-content: flex-start; gap: 2px 10px; text-align: left; }
+.price-table td.name::before, .price-table td.is-empty { display: none; }
+.price-table .v { display: block; }
+.price-table small { display: block; color: var(--muted); font-size: 13.5px; line-height: 1.3; }
+.price-table .name a { text-decoration: none; }
+.price-table .studio-hand { font-family: var(--font-hand); font-size: 30px; font-weight: 700; line-height: 1; color: var(--tone-ink); }
+.price-table .combo { color: var(--ok); }
+@media (min-width: 900px) {
+  .price-table { display: table; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .price-table thead { display: table-header-group; }
+  .price-table tbody { display: table-row-group; }
+  .price-table tr { display: table-row; box-shadow: none; }
+  .price-table th { text-align: left; font-size: 14px; font-weight: 900; color: var(--ink-soft); background: var(--bg-warm); padding: 12px 16px; }
+  .price-table td, .price-table td.is-empty { display: table-cell; padding: 12px 16px; text-align: left; vertical-align: middle; border-top: 1px solid var(--line); }
+  .price-table tr.cont-row td { border-top-style: dashed; }
+  .price-table td:first-child { border-left: 6px solid var(--tone); }
+  .price-table td::before { display: none; }
+}
+
 .checklist { list-style: none; padding: 0; margin: 0 0 1em; display: grid; gap: 10px; }
 .checklist li { position: relative; padding-left: 34px; }
 .checklist li::before {
@@ -376,7 +418,7 @@ button.media-tile:hover .play { transform: scale(1.08); }
 .group-item-head b { font-size: 18px; }
 .slot-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .slot { display: inline-flex; gap: 6px; align-items: center; padding: 5px 10px; border-radius: 10px; background: var(--tone-soft); color: var(--tone-ink); font-weight: 800; font-size: 15px; }
-.slot.today { background: var(--tone); color: var(--ink); }
+.slot.today { background: var(--tone-ink); color: #fff; }
 
 /* ---------- Педагоги ---------- */
 .teacher-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }

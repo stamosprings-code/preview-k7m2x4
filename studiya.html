@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Студия — «Сказочный мир», Колтуши</title>
+  <meta name="description" content="Студия Центра эстетического развития «Сказочный мир» в Колтушах: возраст, группы, расписание, цены и педагог.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#EE8833">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="studii">
+  <div id="site-header"></div>
+  <noscript><p class="container">Для работы демо-версии включите JavaScript в браузере.</p></noscript>
+
+  <main id="studio-page">
+    <!-- Первый экран: название, возраст, цены и запись на пробное -->
+    <section class="studio-hero" id="studio-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Главная</a> · <a href="studii.html">Студии</a> · <span id="crumb">Студия</span></div>
+        <div class="studio-hero-inner" id="studio-hero-inner"></div>
+      </div>
+    </section>
+
+    <section class="section" id="o-studii">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">О студии</span>
+          <h2>Чем занимаемся</h2>
+          <ul class="checklist" id="studio-points"></ul>
+          <div id="studio-extra"></div>
+        </div>
+        <div>
+          <span class="eyebrow">Педагог</span>
+          <h2>Кто ведёт занятия</h2>
+          <div id="studio-teacher"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="gruppy">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Учебный год 2026/2027</span>
+            <h2>Группы и расписание</h2>
+          </div>
+        </div>
+        <div class="group-list" id="studio-groups"></div>
+      </div>
+    </section>
+
+    <section class="section" id="foto">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Фото</span>
+            <h2>Как проходят занятия</h2>
+            <p>Здесь будут настоящие фото с занятий и выступлений — после согласования с центром и родителями.</p>
+          </div>
+        </div>
+        <div class="gallery gallery-studio" id="studio-gallery"></div>
+      </div>
+    </section>
+
+    <section class="section section-warm" id="drugie">
+      <div class="container">
+        <h2>Другие студии центра</h2>
+        <p class="muted" id="other-note"></p>
+        <div class="chips" id="other-studios"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/studiya.js"></script>
+</body>
+</html>

@@ -368,6 +368,38 @@
   }
   function groupTeacher(g) { return teacher(studio(g.studio).teacher); }
   function lessonsOfGroup(gid) { return LESSONS.filter(function (l) { return l.group === gid; }); }
+  function groupsOfStudio(sid) { return GROUPS.filter(function (g) { return g.studio === sid; }); }
+  // Страница студии (studiya.html) — одна на все студии, студия выбирается в адресе
+  function studioUrl(sid) { return 'studiya.html?id=' + sid; }
+  // Запись на пробное из студии: заглушка «Это демо-версия» сразу показывает выбранную студию
+  function trialUrl(sid) { return 'demo.html?form=probnoe&studio=' + sid; }
+
+  // Дни словами: «Пн, Ср»; три дня подряд и больше — диапазоном «Пн–Пт»
+  function daysText(days) {
+    var runs = [];
+    days.slice().sort().forEach(function (d) {
+      var last = runs[runs.length - 1];
+      if (last && d === last[last.length - 1] + 1) last.push(d);
+      else runs.push([d]);
+    });
+    return runs.map(function (r) {
+      if (r.length >= 3) return WEEKDAYS_SHORT[r[0]] + '–' + WEEKDAYS_SHORT[r[r.length - 1]];
+      return r.map(function (d) { return WEEKDAYS_SHORT[d]; }).join(', ');
+    }).join(', ');
+  }
+  // Расписание группы: занятия с одинаковым временем объединяются в один слот
+  // → [{ days: [0, 2], daysText: 'Пн, Ср', time: '17:30–19:00' }]
+  function groupSchedule(gid) {
+    var slots = [];
+    lessonsOfGroup(gid).forEach(function (l) {
+      var time = l.start + '–' + l.end;
+      var slot = slots.filter(function (s) { return s.time === time; })[0];
+      if (!slot) { slot = { days: [], time: time }; slots.push(slot); }
+      slot.days.push(l.day);
+    });
+    slots.forEach(function (s) { s.days.sort(); s.daysText = daysText(s.days); });
+    return slots.sort(function (a, b) { return a.days[0] - b.days[0]; });
+  }
   function fmtPrice(v) { return v.toLocaleString('ru-RU').replace(/\u00a0/g, '\u202f') + '\u00a0₽'; }
   function fmtAge(a) { return String(a).replace('.', ','); }
   // «1 год», «3 года», «7 лет»
@@ -422,7 +454,7 @@
     state: load, save: save, reset: reset,
     today: today, addDays: addDays, iso: iso, weekdayIndex: weekdayIndex, fmtDate: fmtDate, fmtDateShort: fmtDateShort, parseISO: parseISO,
     studio: studio, group: group, teacher: teacher, byId: byId, studioPlans: studioPlans, minPrice: minPrice, stateDate: stateDate, groupTeacher: groupTeacher,
-    lessonsOfGroup: lessonsOfGroup, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive,
+    lessonsOfGroup: lessonsOfGroup, groupsOfStudio: groupsOfStudio, studioUrl: studioUrl, trialUrl: trialUrl, daysText: daysText, groupSchedule: groupSchedule, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive,
     plural: plural, yearsText: yearsText, groupsForAge: groupsForAge, studiosForAge: studiosForAge, pickerAges: pickerAges,
     liveBanners: liveBanners, livePromos: livePromos
   };
