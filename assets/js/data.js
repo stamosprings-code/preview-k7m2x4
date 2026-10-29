@@ -1,7 +1,7 @@
 /*
  * Демо-данные прототипа «Сказочный мир».
- * Студии, возраст, количество групп, цены и контакты — реальные, из группы ВК (октябрь 2026).
- * Расписание, педагоги, дети, родители, акции, новости и отзывы — вымышленные примеры для показа.
+ * Студии, группы, расписание и цены — реальные, из расписания центра на 2026/2027 учебный год; контакты — из группы ВК.
+ * Педагоги, дети, родители, акции, новости и отзывы — вымышленные примеры для показа.
  * Изменения, сделанные в демо-кабинетах, хранятся только в браузере (localStorage).
  */
 (function () {
@@ -198,6 +198,13 @@
   add('p1', [0, 2], '19:00', '20:00');
   add('lg', [0, 2], '15:00', '18:30');
 
+  // Отзывы — пример оформления (вымышленные). Настоящие возьмём из группы ВК с разрешения авторов.
+  var REVIEWS = [
+    { author: 'Мама Вари, 7 лет', studio: 'oblaka', text: 'Дочка была очень стеснительной, а после года в «Облаках» сама вызвалась читать стихи на утреннике. Спектакли — настоящие, мы с бабушкой плакали.' },
+    { author: 'Папа Миши, 5 лет', studio: 'ryzhiki', text: 'Ходим в «Рыжики» перед садом: полдня, рядом с домом, ребёнок бежит туда с радостью. Педагоги всегда расскажут, как прошёл день.' },
+    { author: 'Мама Кати, 11 лет', studio: 'golosok', text: 'Занимаемся вокалом и английским в одном здании — удобно забирать, а за вторую студию платим меньше. Катя уже выступала на фестивале.' }
+  ];
+
   // Особые дни без постоянных групп
   var SCHEDULE_NOTES = [
     { day: 4, studio: 'oblaka', text: 'День дополнительных репетиций (по приглашению)' }
@@ -363,6 +370,32 @@
   function lessonsOfGroup(gid) { return LESSONS.filter(function (l) { return l.group === gid; }); }
   function fmtPrice(v) { return v.toLocaleString('ru-RU').replace(/\u00a0/g, '\u202f') + '\u00a0₽'; }
   function fmtAge(a) { return String(a).replace('.', ','); }
+  // «1 год», «3 года», «7 лет»
+  function plural(n, one, few, many) {
+    var m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+    return many;
+  }
+  function yearsText(n) { return n + '\u00a0' + plural(n, 'год', 'года', 'лет'); }
+
+  // Подбор по возрасту: ребёнку «age» полных лет (от age до age+1) подходит группа,
+  // если её возрастной диапазон пересекается с этим годом жизни.
+  function groupsForAge(age) {
+    return GROUPS.filter(function (g) { return g.age[0] < age + 1 && g.age[1] >= age; });
+  }
+  function studiosForAge(age) {
+    var ids = groupsForAge(age).map(function (g) { return g.studio; });
+    return STUDIOS.filter(function (s) { return ids.indexOf(s.id) !== -1; });
+  }
+  // Возрасты для кнопок подбора: от младшей группы до старшей
+  function pickerAges() {
+    var lo = Math.floor(Math.min.apply(null, GROUPS.map(function (g) { return g.age[0]; })));
+    var hi = Math.max.apply(null, GROUPS.map(function (g) { return g.age[1]; }));
+    var out = [];
+    for (var a = lo; a < hi; a++) out.push(a);
+    return out;
+  }
 
   // Дата из демо-состояния: число — смещение от сегодня, строка — ISO-дата
   function stateDate(v) {
@@ -375,13 +408,22 @@
     var until = stateDate(p.until);
     return !until || until >= today();
   }
+  // Кнопки-баннеры на главной: только включённые в админке, в заданном там порядке
+  function liveBanners() {
+    return load().banners.filter(function (b) { return b.enabled; });
+  }
+  function livePromos() {
+    return load().promos.filter(promoIsLive);
+  }
 
   window.SM = {
-    CENTER: CENTER, STUDIOS: STUDIOS, TERMS: TERMS, SCHEDULE_NOTES: SCHEDULE_NOTES, TEACHERS: TEACHERS, GROUPS: GROUPS, LESSONS: LESSONS, PARTY: PARTY,
+    CENTER: CENTER, STUDIOS: STUDIOS, TERMS: TERMS, SCHEDULE_NOTES: SCHEDULE_NOTES, TEACHERS: TEACHERS, GROUPS: GROUPS, LESSONS: LESSONS, PARTY: PARTY, REVIEWS: REVIEWS,
     WEEKDAYS: WEEKDAYS, WEEKDAYS_SHORT: WEEKDAYS_SHORT,
     state: load, save: save, reset: reset,
     today: today, addDays: addDays, iso: iso, weekdayIndex: weekdayIndex, fmtDate: fmtDate, fmtDateShort: fmtDateShort, parseISO: parseISO,
     studio: studio, group: group, teacher: teacher, byId: byId, studioPlans: studioPlans, minPrice: minPrice, stateDate: stateDate, groupTeacher: groupTeacher,
-    lessonsOfGroup: lessonsOfGroup, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive
+    lessonsOfGroup: lessonsOfGroup, fmtPrice: fmtPrice, fmtAge: fmtAge, promoIsLive: promoIsLive,
+    plural: plural, yearsText: yearsText, groupsForAge: groupsForAge, studiosForAge: studiosForAge, pickerAges: pickerAges,
+    liveBanners: liveBanners, livePromos: livePromos
   };
 })();

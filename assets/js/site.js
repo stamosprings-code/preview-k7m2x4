@@ -80,7 +80,8 @@
       '</svg>';
   }
 
-  // Круглая иконка: полосы по кругу и оранжевый ромб в центре, как на аватарке группы ВК
+  // Круглая иконка, как на аватарке группы ВК: полосы по кругу, в центре оранжевый ромб
+  // с надписью «Центр Эстетического Развития» и «СКАЗОЧНЫЙ МИР» (белые буквы с синей обводкой)
   var roundId = 0;
   function logoRound(cls) {
     var stripes = '', x = 0, i = 0, clip = 'sm-round-' + (++roundId);
@@ -90,12 +91,17 @@
       x += w;
       i++;
     }
+    var small = 'text-anchor="middle" fill="#fff" font-family="Nunito, Arial, sans-serif" font-weight="800" font-size="6.2"';
+    var big = 'text-anchor="middle" fill="#fff" stroke="' + PALETTE.blue + '" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke" ' +
+      'font-family="Caveat, cursive" font-weight="700" font-size="19"';
     return '<svg class="' + (cls || 'brand-icon') + '" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
       '<defs><clipPath id="' + clip + '"><circle cx="50" cy="50" r="50"/></clipPath></defs>' +
       '<g clip-path="url(#' + clip + ')"><rect width="100" height="100" fill="' + PALETTE.orange + '"/>' + stripes + '</g>' +
       '<circle cx="50" cy="50" r="48" fill="none" stroke="#fff" stroke-width="4"/>' +
-      '<rect x="25" y="25" width="50" height="50" rx="9" transform="rotate(45 50 50)" fill="' + PALETTE.orange + '" stroke="#fff" stroke-width="3"/>' +
-      '<path d="M50 33l4.6 9.4 10.4 1.5-7.5 7.3 1.8 10.3L50 56.6l-9.3 4.9 1.8-10.3-7.5-7.3 10.4-1.5z" fill="#fff" stroke="' + PALETTE.blue + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<rect x="18" y="18" width="64" height="64" rx="5" transform="rotate(45 50 50)" fill="' + PALETTE.orange + '"/>' +
+      '<text ' + small + '><tspan x="50" y="27">Центр</tspan><tspan x="50" y="34">Эстетического</tspan><tspan x="50" y="41">Развития</tspan></text>' +
+      '<text x="50" y="60" ' + big + ' textLength="82" lengthAdjust="spacingAndGlyphs">СКАЗОЧНЫЙ</text>' +
+      '<text x="50" y="77" ' + big + '>МИР</text>' +
       '</svg>';
   }
 

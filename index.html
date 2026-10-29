@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>«Сказочный мир» — центр эстетического развития в Колтушах</title>
-  <meta name="description" content="Творческие студии для детей от 2,7 до 16 лет в Колтушах: театр, вокал, танец, гимнастика, рисунок и глина, английский, мини-сад, подготовка к школе, логопед.">
+  <meta name="description" content="Центр эстетического развития для детей от 2,7 до 16 лет в Колтушах: театр, вокал, танец, гимнастика, рисунок и глина, английский, мини-сад, подготовка к школе, логопед.">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#EE8833">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -14,18 +14,105 @@
   <div id="site-header"></div>
   <noscript><p class="container">Для работы демо-версии включите JavaScript в браузере.</p></noscript>
 
-  <!-- Временная главная: полноценная страница — задача 2 в docs/plan.md -->
   <main>
+    <!-- Первый экран: что это и для какого возраста — за 5 секунд -->
     <section class="hero">
       <div class="container hero-inner">
         <div>
-          <h1>Творческие студии для детей в <span class="hand">Колтушах</span></h1>
-          <p class="hero-lead">Главная страница нового сайта сейчас в работе. Пока можно посмотреть основу: шапку, меню, подвал и страницу записи.</p>
+          <h1>Центр эстетического развития для детей <span class="nowrap">от 2,7 до 16 лет</span> в&nbsp;<span class="hand">Колтушах</span></h1>
+          <p class="hero-lead">Театр, вокал, танец, гимнастика, рисунок и&nbsp;глина, английский, мини-сад, подготовка к&nbsp;школе и&nbsp;логопед — всё в&nbsp;одном центре рядом с&nbsp;домом.</p>
           <div class="hero-actions">
             <a class="btn btn-blue btn-lg" href="demo.html?form=probnoe">Записаться на пробное занятие</a>
+            <a class="btn btn-ghost" href="#podbor">Подобрать студию по возрасту</a>
           </div>
+          <p class="hero-note" id="hero-note">Колтуши, ул. Иоанна Кронштадтского, д. 3 · <a href="tel:+79213195677">+7&nbsp;(921)&nbsp;319&#8209;56&#8209;77</a></p>
         </div>
         <div class="hero-art" data-logo="banner"></div>
+      </div>
+    </section>
+
+    <section class="section-facts">
+      <div class="container">
+        <div class="facts" id="facts"></div>
+      </div>
+    </section>
+
+    <section class="section section-quick" aria-label="Быстрые ссылки">
+      <div class="container">
+        <div class="quick-links" id="quick-links"></div>
+      </div>
+    </section>
+
+    <section class="section section-warm" id="akcii">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Сейчас действуют</span>
+            <h2>Акции и скидки</h2>
+          </div>
+        </div>
+        <div class="promo-grid cols-3" id="promos"></div>
+      </div>
+    </section>
+
+    <section class="section" id="podbor">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Подбор по возрасту</span>
+            <h2>Куда пойти вашему ребёнку</h2>
+            <p>Выберите, сколько ребёнку полных лет, — покажем студии, где есть группа для этого возраста.</p>
+          </div>
+        </div>
+        <div class="age-picker">
+          <div class="age-picker-title" id="age-title">Сколько лет ребёнку?</div>
+          <div class="chips chips-scroll" id="age-chips" role="group" aria-labelledby="age-title"></div>
+          <div class="age-result" id="age-result" role="status"></div>
+        </div>
+        <div class="studio-grid" id="studio-grid"></div>
+        <div class="callout home-help">
+          <b>Не знаете, что выбрать?</b> Приходите на пробное занятие — педагог познакомится с ребёнком и подскажет группу.
+          <a class="btn btn-blue" href="demo.html?form=probnoe">Записаться на пробное</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="foto">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Концерты и спектакли</span>
+            <h2>Фото и видео</h2>
+            <p>Здесь будут настоящие фото и видео с концертов и занятий центра — после согласования с центром и родителями.</p>
+          </div>
+        </div>
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </section>
+
+    <section class="section" id="otzyvy">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Говорят родители</span>
+            <h2>Отзывы</h2>
+            <p>Пример оформления: настоящие отзывы возьмём из группы ВКонтакте с разрешения авторов.</p>
+          </div>
+        </div>
+        <div class="rating-box" id="rating"></div>
+        <div class="reviews" id="reviews"></div>
+      </div>
+    </section>
+
+    <section class="section section-warm" id="kontakty">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Ждём в гости</span>
+            <h2>Как нас найти</h2>
+          </div>
+        </div>
+        <div class="contact-card" id="home-contacts"></div>
       </div>
     </section>
   </main>
@@ -34,5 +121,6 @@
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/home.js"></script>
 </body>
 </html>
